@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Profile</title>
+    <style>
+        /* 基础重置与全局配置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "仿宋", "SimSun", sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #f0f9f0;
+            color: #333;
+            line-height: 1.7;
+        }
+
+        /* 头部导航优化 */
+        .header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(90deg, #388E3C 0%, #66BB6A 100%);
+            padding: 18px 25px;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+            color: #FFFFFF;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.25);
+            white-space: nowrap;
+        }
+
+        .nav-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .nav-button {
+            padding: 9px 22px;
+            background-color: rgba(255, 255, 255, 0.25);
+            border: none;
+            cursor: pointer;
+            font-family: "仿宋", sans-serif;
+            border-radius: 30px;
+            color: white;
+            font-size: 17px;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(8px);
+            white-space: nowrap;
+        }
+
+        .nav-button:hover {
+            background-color: rgba(255, 255, 255, 0.35);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .nav-button.active {
+            background-color: rgba(255, 255, 255, 0.45);
+            font-weight: bold;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.12);
+        }
+
+        /* 主内容区域布局优化 */
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            flex: 1;
+            width: 100%;
+            padding: 30px 20px;
+            gap: 30px;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        /* 左侧栏样式升级 */
+        .left-column {
+            width: 100%;
+            max-width: 360px;
+            flex: 0 0 360px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* 右侧内容区域适配 */
+        .right-column {
+            flex: 1;
+            min-width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* 卡片通用样式增强 */
+        .card {
+            background-color: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+            transition: all 0.4s ease;
+            border: 1px solid #f0f7f0;
+        }
+
+        .card:hover {
+            box-shadow: 0 10px 22px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            font-size: 24px;
+            margin-bottom: 25px;
+            color: #2E7D32;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #E8F5E9;
+            position: relative;
+        }
+
+        .card-header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 70px;
+            height: 2px;
+            background-color: #4CAF50;
+        }
+
+        /* 个人信息区域优化 */
+        .profile-image {
+            width: 190px;
+            height: 190px;
+            background-color: #F1F8E9;
+            border: 3px dashed #66BB6A;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #388E3C;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-image::before {
+            content: '';
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            background: linear-gradient(45deg, transparent, rgba(76, 175, 80, 0.08), transparent);
+            transform: rotate(45deg) translate(-50%, -50%);
+            transition: all 1.5s ease;
+        }
+
+        .profile-image:hover {
+            background-color: #E8F5E9;
+            border-color: #4CAF50;
+        }
+
+        .profile-image:hover::before {
+            transform: rotate(45deg) translate(50%, 50%);
+        }
+
+        .info-item {
+            margin-bottom: 18px;
+            font-size: 17px;
+            color: #333;
+            padding-left: 15px;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .info-item:hover {
+            color: #2E7D32;
+            padding-left: 18px;
+        }
+
+        .info-item::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            top: 1px;
+            color: #66BB6A;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .info-item strong {
+            display: inline-block;
+            width: 95px;
+            color: #2E7D32;
+            font-weight: 600;
+        }
+
+        /* 内容卡片交互优化 */
+        .content-card {
+            display: none;
+            animation: fadeInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-card.active {
+            display: block;
+        }
+
+        .section-body {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            align-items: flex-start;
+        }
+
+        .section-image {
+            width: 100%;
+            max-width: 240px;
+            height: 180px;
+            background-color: #F1F8E9;
+            border: 2px dashed #66BB6A;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            color: #388E3C;
+            border-radius: 12px;
+            flex-shrink: 0;
+            text-align: center;
+            padding: 15px;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .section-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background: linear-gradient(to right, #4CAF50, #8BC34A) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section-image:hover {
+            background-color: #E8F5E9;
+            border-color: #4CAF50;
+        }
+
+        .section-image:hover::after {
+            opacity: 1;
+        }
+
+        .section-text {
+            flex: 1;
+            font-size: 17px;
+            color: #333;
+        }
+
+        .section-text p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .section-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 列表样式优化 */
+        .skills-list, .experience-list {
+            padding-left: 30px;
+        }
+
+        .skills-list li, .experience-list li {
+            margin-bottom: 15px;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .skills-list li:hover, .experience-list li:hover {
+            color: #2E7D32;
+            padding-left: 5px;
+        }
+
+        .skills-list li::marker {
+            color: #66BB6A;
+            font-size: 1.3em;
+        }
+
+        .experience-item {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #F5F5F5;
+            transition: all 0.3s ease;
+        }
+
+        .experience-item:hover {
+            background-color: #F9FFF9;
+            padding: 0 15px 25px 15px;
+            border-radius: 8px;
+        }
+
+        .experience-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .experience-item p:first-child {
+            color: #2E7D32;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        /* 页脚组件补充 */
+        .footer {
+            background-color: #2E7D32;
+            color: #E8F5E9;
+            text-align: center;
+            padding: 20px 25px;
+            font-size: 15px;
+            margin-top: auto;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+
+        .footer .contact-info {
+            margin-bottom: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .footer .contact-info span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .footer .copyright {
+            opacity: 0.8;
+        }
+
+        /* 响应式多断点适配 */
+        @media (min-width: 768px) {
+            .header {
+                flex-wrap: nowrap;
+            }
+            .header h1 {
+                margin: 0 30px 0 0;
+            }
+            .nav-container {
+                width: auto;
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .left-column {
+                flex: 0 0 100%;
+                max-width: 100%;
+                align-items: center;
+            }
+            .left-column .card {
+                width: 100%;
+                max-width: 500px;
+            }
+            .section-body {
+                justify-content: center;
+            }
+            .section-image {
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header {
+                padding: 15px 15px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+            .nav-button {
+                padding: 7px 16px;
+                font-size: 15px;
+            }
+            .main-content {
+                padding: 20px 15px;
+                gap: 20px;
+            }
+            .card {
+                padding: 22px;
+            }
+            .card-header {
+                font-size: 22px;
+                margin-bottom: 20px;
+                padding-bottom: 12px;
+            }
+            .profile-image {
+                width: 160px;
+                height: 160px;
+                margin-bottom: 25px;
+            }
+            .info-item {
+                font-size: 16px;
+                margin-bottom: 15px;
+            }
+            .section-text {
+                font-size: 16px;
+            }
+            .footer .contact-info {
+                gap: 15px 25px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .nav-container {
+                gap: 8px;
+            }
+            .nav-button {
+                padding: 6px 12px;
+                font-size: 14px;
+                border-radius: 25px;
+            }
+            .section-image {
+                height: 150px;
+                font-size: 15px;
+            }
+            .footer .contact-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航区域 -->
+    <div class="header">
+        <h1>Personal Profile</h1>
+        <div class="nav-container">
+            <button class="nav-button active" onclick="showSection('intro')">个人简介</button>
+            <button class="nav-button" onclick="showSection('skills')">擅长领域</button>
+            <button class="nav-button" onclick="showSection('experience')">实践经历</button>
+            <button class="nav-button" onclick="showSection('evaluation')">自我评价</button>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="main-content">
+        <!-- 左侧栏 - 个人基础信息 -->
+        <div class="left-column">
+            <div class="card">
+                <h2 class="card-header">关于我</h2>
+                <div class="profile-image">个人头像</div>
+                <div class="info-item"><strong>姓名：</strong>张三</div>
+                <div class="info-item"><strong>出生日期：</strong>1990-01-01</div>
+                <div class="info-item"><strong>学历：</strong>计算机科学与技术专业 本科</div>
+                <div class="info-item"><strong>工作年限：</strong>5年</div>
+                <div class="info-item"><strong>职位：</strong>高级前端开发工程师</div>
+                <div class="info-item"><strong>技术方向：</strong>Web前端开发、用户体验优化</div>
+            </div>
+        </div>
+
+        <!-- 右侧内容区域 -->
+        <div class="right-column">
+            <!-- 个人简介 - 默认显示 -->
+            <div class="card content-card active" id="intro">
+                <h2 class="card-header">个人简介</h2>
+                <div class="section-body">
+                    <div class="section-image">[个人风采照片]</div>
+                    <div class="section-text">
+                        <p>我是一名具有5年前端开发经验的高级工程师，专注于创造优秀的用户体验和高效的前端架构。
+                                                    <p>在过去的职业生涯中，我参与了多个企业级Web应用的开发，涵盖了电商、金融、教育等多个领域。我不仅关注代码的实现，更注重产品的用户体验和性能优化。</p>
+                        <p>我始终保持对新技术的学习热情，定期阅读技术文档、参与行业会议，并将所学应用到实际项目中。我坚信优秀的前端工程师不仅要懂技术，更要懂用户。</p>
+                        <p>除了技术开发，我也积极参与团队建设和技术分享，帮助团队成员共同成长，提升整体技术水平。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 擅长领域 -->
+            <div class="card content-card" id="skills">
+                <h2 class="card-header">擅长领域</h2>
+                <div class="section-body">
+                    <div class="section-image">[技术栈示意图]</div>
+                    <div class="section-text">
+                        <ul class="skills-list">
+                            <li><strong>前端框架：</strong>精通React、Vue等主流框架，熟悉其核心原理和生态系统，能够根据项目需求选择合适的技术方案。</li>
+                            <li><strong>前端工程化：</strong>熟悉Webpack、Babel等构建工具，了解前端自动化测试和持续集成，能够搭建高效的前端开发环境。</li>
+                            <li><strong>性能优化：</strong>擅长前端性能分析和优化，包括加载速度、渲染性能等方面，有丰富的实战经验。</li>
+                            <li><strong>用户体验：</strong>熟悉无障碍设计、响应式布局，能够创造优秀的用户交互体验，提升产品易用性。</li>
+                            <li><strong>新技术研究：</strong>持续关注前端新技术发展，如PWA、WebAssembly等，并能够快速应用到实际项目中。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 实践经历 -->
+            <div class="card content-card" id="experience">
+                <h2 class="card-header">实践经历</h2>
+                <div class="section-body">
+                    <div class="section-image">[项目实战照片]</div>
+                    <div class="section-text">
+                        <div class="experience-list">
+                            <div class="experience-item">
+                                <p><strong>XX科技公司 | 高级前端开发工程师</strong> (2020.03 - 至今)</p>
+                                <p>• 参与企业级SaaS平台的开发，负责前端架构设计和核心模块开发</p>
+                                <p>• 主导前端性能优化项目，将首屏加载时间缩短40%，提升用户体验</p>
+                                <p>• 推动团队技术升级，引入TypeScript和微前端架构，提高代码质量和开发效率</p>
+                            </div>
+                            <div class="experience-item">
+                                <p><strong>YY互联网公司 | 中级前端开发工程师</strong> (2018.07 - 2020.02)</p>
+                                <p>• 参与电商平台前端开发，负责商品详情页和购物车模块</p>
+                                <p>• 实现响应式布局，确保网站在各种设备上的良好显示</p>
+                                <p>• 优化前端构建流程，将构建时间从5分钟缩短至1.5分钟</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 自我评价 -->
+            <div class="card content-card" id="evaluation">
+                <h2 class="card-header">自我评价</h2>
+                <div class="section-body">
+                    <div class="section-image">[自我提升照片]</div>
+                    <div class="section-text">
+                        <p>作为一名前端开发工程师，我具备以下特质：</p>
+                        <p><strong>技术扎实：</strong>精通前端开发技术栈，对HTML、CSS、JavaScript有深入理解，熟悉主流前端框架和工程化工具。</p>
+                        <p><strong>学习能力强：</strong>保持对新技术的学习热情，定期阅读技术文档、参与行业会议，能快速掌握并应用新技术。</p>
+                        <p><strong>用户体验敏感：</strong>注重产品用户体验，能从用户角度思考问题，提出优化方案，提升产品易用性。</p>
+                        <p><strong>团队协作佳：</strong>良好的沟通能力，能与产品、设计、后端团队高效协作，推动项目顺利进行。</p>
+                        <p><strong>问题解决者：</strong>善于分析复杂问题，能提出创新解决方案，在紧急情况下保持冷静，高效解决问题。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚区域 -->
+    <div class="footer">
+        <div class="contact-info">
+            <span><i>📱</i> 联系电话：138****1234</span>
+            <span><i>📧</i> 邮箱：example@xxx.com</span>
+            <span><i>🔗</i> 个人博客：blog.xxx.com</span>
+        </div>
+        <div class="copyright">© 2024 个人简历 - 保留所有权利</div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // 隐藏所有内容卡片
+            document.querySelectorAll('.content-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // 显示选中的内容卡片
+            document.getElementById(sectionId).classList.add('active');
+            
+            // 更新按钮激活状态
+            document.querySelectorAll('.nav-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            // 兼容事件对象，避免无事件源时报错
+            if (event) {
+                event.target.classList.add('active');
+            }
+
+            // 页面滚动到内容区域顶部（优化体验）
+            const rightColumn = document.querySelector('.right-column');
+            if (rightColumn) {
+                rightColumn.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // 初始化时绑定导航按钮事件（增强兼容性）
+        document.addEventListener('DOMContentLoaded', function() {
+            const navButtons = document.querySelectorAll('.nav-button');
+            navButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('onclick').match(/'([^']+)'/)[1];
+                    showSection(targetId);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
